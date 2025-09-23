@@ -19,9 +19,29 @@ class Api::V1::ResearchDataController < Api::V1::BaseController
     if params[:category].present?
       @research_data = @research_data.where(category: params[:category])
     end
+
+    # Apply date filters
+    if params[:date_from].present?
+      @research_data = @research_data.where('publication_date >= ?', params[:date_from])
+    end
+    
+    if params[:date_to].present?
+      @research_data = @research_data.where('publication_date <= ?', params[:date_to])
+    end
+    
+    # Pagination
+    page = (params[:page] || 1).to_i
+    per_page = (params[:per_page] || 10).to_i
+    per_page = [per_page, 100].min # Limit max per_page to 100
+    
+    total_count = @research_data.count
+    total_pages = (total_count.to_f / per_page).ceil
+    
+    offset = (page - 1) * per_page
+    paginated_data = @research_data.limit(per_page).offset(offset)
     
     render json: {
-      data: @research_data.map do |item|
+      data: paginated_data.map do |item|
         {
           id: item.id,
           title: item.title,
@@ -44,8 +64,15 @@ class Api::V1::ResearchDataController < Api::V1::BaseController
           updated_at: item.updated_at
         }
       end,
+      total_count: total_count,
+      total_pages: total_pages,
+      current_page: page,
+      per_page: per_page,
+      # Add aliases for frontend compatibility
+      currentPage: page,
+      totalPages: total_pages,
       meta: {
-        total_count: @research_data.count
+        total_count: total_count
       }
     }
   end

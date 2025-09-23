@@ -80,8 +80,8 @@ export default function Reports() {
   };
 
   // Calculate preview statistics
-  const previewStats = filteredData || { data: [], meta: { total_count: analytics?.total_count || 0 } };
-  const totalCount = previewStats.meta?.total_count || previewStats.data?.length || 0;
+  const previewStats = filteredData || { data: [], total_count: analytics?.total_count || 0, meta: { total_count: analytics?.total_count || 0 } };
+  const totalCount = previewStats.total_count || previewStats.meta?.total_count || previewStats.data?.length || 0;
   const categoryBreakdown = previewStats.data?.reduce((acc: Record<string, number>, item) => {
     acc[item.category] = (acc[item.category] || 0) + 1;
     return acc;
@@ -245,7 +245,7 @@ export default function Reports() {
                         <div
                           className="bg-blue-600 h-2 rounded-full"
                           style={{ 
-                            width: `${(count / previewStats.total) * 100}%` 
+                            width: `${(count / totalCount) * 100}%` 
                           }}
                         ></div>
                       </div>

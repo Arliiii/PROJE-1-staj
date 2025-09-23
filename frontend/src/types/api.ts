@@ -23,6 +23,13 @@ export interface ResearchDatum {
 
 export interface ApiResponse<T> {
   data: T;
+  total_count: number;
+  total_pages: number;
+  current_page: number;
+  per_page: number;
+  // Aliases for convenience
+  currentPage: number;
+  totalPages: number;
   meta?: {
     total_count: number;
   };

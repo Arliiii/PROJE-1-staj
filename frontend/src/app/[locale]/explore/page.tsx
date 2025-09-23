@@ -143,14 +143,14 @@ export default function Explore() {
         {/* Results count */}
         <div className="flex justify-between items-center">
           <p className="text-gray-600">
-            {isLoading ? 'Loading...' : `${researchData?.total || 0} results found`}
+            {isLoading ? 'Loading...' : `${researchData?.total_count || 0} results found`}
             {(search || category) && ' for your search'}
           </p>
           
           {/* Pagination info */}
-          {researchData && researchData.total > 0 && (
+          {researchData && researchData.total_count > 0 && (
             <p className="text-sm text-gray-500">
-              Page {researchData.current_page} of {researchData.total_pages}
+              Page {researchData.currentPage} of {researchData.totalPages}
             </p>
           )}
         </div>
@@ -269,7 +269,7 @@ export default function Explore() {
               return pageNum <= researchData.total_pages ? (
                 <Button
                   key={pageNum}
-                  variant={page === pageNum ? "default" : "outline"}
+                  variant={page === pageNum ? "primary" : "outline"}
                   onClick={() => setPage(pageNum)}
                   className="w-10"
                 >
