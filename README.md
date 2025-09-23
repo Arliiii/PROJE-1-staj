@@ -163,3 +163,195 @@ This project is open source and available under the [MIT License](LICENSE).
 
 For questions or support, please contact the development team.
 # PROJE-1-staj
+
+## 🔬 Research Data Management System
+
+A comprehensive full-stack web application for managing research publications and data with multilingual support (English/Turkish).
+
+### 🏗️ **Architecture**
+
+```
+📁 staj-proje-1/
+├── 📁 backend/          # Rails 8 API Server
+└── 📁 frontend/         # Next.js 15 Client Application
+```
+
+## 🚀 **Features**
+
+### 📊 **Core Functionality**
+- ✅ **Research Data Management**: Complete CRUD operations for research publications
+- 📈 **Analytics Dashboard**: Visual charts and statistics
+- 🔍 **Advanced Search & Filtering**: Search by title, author, category, keywords
+- 📱 **Responsive Design**: Works on desktop, tablet, and mobile devices
+- 🌍 **Internationalization**: Full English/Turkish language support
+
+### 🗃️ **Data Fields**
+- **Basic Information**: Title, Author(s), Publication Year, Category, Keywords
+- **Journal Details**: Journal Name, Volume, Issue, Pages, DOI, URL
+- **Research Content**: Abstract, Methodology, Results, Conclusions, Notes
+
+### 📊 **Reports & Analytics**
+- 📈 **Dashboard Statistics**: Total research count, categories, recent activity
+- 📊 **Visual Charts**: Bar charts and pie charts for data visualization
+- 📄 **Export Options**: CSV and PDF report generation
+- 🔍 **Filtering**: Date range and category-based filtering
+
+## 🛠️ **Technology Stack**
+
+### 🖥️ **Backend (Rails API)**
+- **Framework**: Ruby on Rails 8.0.2.1
+- **Database**: SQLite3 (development)
+- **Authentication**: API-based
+- **CORS**: Enabled for frontend communication
+- **Testing**: Minitest with comprehensive test coverage
+
+### 🌐 **Frontend (Next.js)**
+- **Framework**: Next.js 15.5.3 with Turbopack
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: React Query (TanStack Query)
+- **Charts**: Recharts for data visualization
+- **Internationalization**: next-intl
+- **UI Components**: Custom component library
+
+## 🚀 **Quick Start**
+
+### 📋 **Prerequisites**
+- Node.js 18+ and npm
+- Ruby 3.4+ and Rails 8+
+- Git
+
+### 🔧 **Installation**
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/Arliiii/PROJE-1-staj.git
+cd PROJE-1-staj
+```
+
+2. **Setup Backend (Rails API)**
+```bash
+cd backend
+bundle install
+rails db:setup
+rails db:seed
+rails server -p 3001
+```
+
+3. **Setup Frontend (Next.js) - New Terminal**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### 🌐 **Access the Application**
+- **Frontend**: http://localhost:3000 (English) or http://localhost:3000/tr (Turkish)
+- **Backend API**: http://localhost:3001/api/v1/research_data
+
+## 📁 **Project Structure**
+
+### 🔧 **Backend Structure**
+```
+backend/
+├── app/
+│   ├── controllers/api/v1/     # API controllers
+│   ├── models/                 # ActiveRecord models
+│   └── views/                  # Email templates
+├── config/
+│   ├── initializers/cors.rb    # CORS configuration
+│   └── routes.rb               # API routes
+├── db/
+│   ├── migrate/                # Database migrations
+│   └── seeds.rb                # Sample data
+└── test/                       # Test suite
+```
+
+### 🎨 **Frontend Structure**
+```
+frontend/
+├── src/
+│   ├── app/[locale]/           # Internationalized pages
+│   ├── components/             # Reusable UI components
+│   ├── lib/                    # Utilities and API client
+│   ├── messages/               # Translation files
+│   └── types/                  # TypeScript definitions
+├── public/                     # Static assets
+└── package.json                # Dependencies
+```
+
+## 🔗 **API Endpoints**
+
+### 📊 **Research Data**
+- `GET /api/v1/research_data` - List all research data
+- `POST /api/v1/research_data` - Create new research entry
+- `GET /api/v1/research_data/:id` - Get specific research entry
+- `PUT /api/v1/research_data/:id` - Update research entry
+- `DELETE /api/v1/research_data/:id` - Delete research entry
+
+### 📈 **Analytics**
+- `GET /api/v1/research_data/analytics` - Get dashboard statistics
+- `GET /api/v1/research_data/categories` - Get available categories
+
+## 🌍 **Internationalization**
+
+### 🗣️ **Supported Languages**
+- 🇺🇸 **English** (en) - Default language
+- 🇹🇷 **Turkish** (tr) - Complete translation
+
+### 🔄 **Language Switching**
+- **URL-based routing**: `/en/` and `/tr/` paths
+- **Language dropdown**: Switch between languages in navigation
+- **Persistent selection**: Language preference maintained across sessions
+
+## 🧪 **Testing**
+
+### 🔍 **Backend Tests**
+```bash
+cd backend
+rails test
+```
+
+### ✅ **Test Coverage**
+- Model validations and scopes
+- API endpoint functionality
+- Error handling and edge cases
+
+## 📦 **Deployment**
+
+### 🐳 **Docker Support**
+- Backend includes Dockerfile and Docker configuration
+- Kamal deployment configuration included
+
+### 🚀 **Production Considerations**
+- Environment variables for configuration
+- Database migrations for production
+- CORS configuration for production domains
+
+## 👥 **Contributing**
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 **License**
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🤝 **Contact**
+
+- **Author**: Arli
+- **GitHub**: [@Arliiii](https://github.com/Arliiii)
+- **Repository**: [PROJE-1-staj](https://github.com/Arliiii/PROJE-1-staj)
+
+---
+
+### 🎯 **Development Status**
+- ✅ **Backend API**: Complete with full CRUD operations
+- ✅ **Frontend Interface**: Responsive design with internationalization
+- ✅ **Database Schema**: Complete with all required fields
+- ✅ **Reports System**: CSV and PDF generation
+- ✅ **Testing**: Comprehensive test coverage
+- ✅ **Documentation**: Complete setup and usage instructions
