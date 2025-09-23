@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: "First Research Study"
+  author: "Dr. Alice Johnson"
+  category: "Technology"
+  keywords: "AI, machine learning"
+  publication_date: 2023-01-15
+  abstract: "This is the first test research study abstract"
+  methodology: "Test methodology for first study"
+  results: "Test results for first study"
+  conclusions: "Test conclusions for first study"
+
+two:
+  title: "Second Research Study"
+  author: "Dr. Bob Smith"
+  category: "Science"
+  keywords: "biology, genetics"
+  publication_date: 2023-02-20
+  abstract: "This is the second test research study abstract"
+  methodology: "Test methodology for second study"
+  results: "Test results for second study"
+  conclusions: "Test conclusions for second study"
