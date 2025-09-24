@@ -28,8 +28,7 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p log tmp storage
 
-# Precompile assets for production
-RUN SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
+# Skip asset precompilation - will be handled at runtime if needed
 
 # Expose port
 EXPOSE 3000
