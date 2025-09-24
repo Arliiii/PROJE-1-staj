@@ -35,4 +35,4 @@ RUN mkdir -p log tmp storage
 EXPOSE 3000
 
 # Start the Rails server with Puma directly
-CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb", "-e", "production"]

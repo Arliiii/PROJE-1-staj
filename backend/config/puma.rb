@@ -27,11 +27,11 @@
 threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 threads threads_count, threads_count
 
-# Bind to all interfaces for Docker deployment (Render provides PORT)
-bind "tcp://0.0.0.0:#{ENV.fetch('PORT', 3000)}"
-
 # Specify the environment that Puma will run in
 environment ENV.fetch("RAILS_ENV", "production")
+
+# Bind to all interfaces for Docker deployment (Render provides PORT)
+bind "tcp://0.0.0.0:#{ENV.fetch('PORT', 3000)}"
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
