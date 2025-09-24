@@ -1,22 +1,31 @@
 databases:
-  - name: mysite
-    databaseName: mysite
-    user: mysite
+  - name: staj-proje-db
+    databaseName: staj_proje
+    user: staj_proje_user
     plan: free
 
 services:
   - type: web
-    name: mysite
+    name: staj-proje-web
     runtime: docker
     plan: free
+    repo: https://github.com/Arliiii/PROJE-1-staj
+    rootDir: ./backend
     dockerfilePath: ./Dockerfile.render
-    # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: mysite
+          name: staj-proje-db
           property: connectionString
       - key: RAILS_MASTER_KEY
-        sync: false
+        value: f5bf2ba73ba1a8eb20f993c0645e1bda
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_SERVE_STATIC_FILES
+        value: true
+      - key: RAILS_LOG_TO_STDOUT
+        value: true
+      - key: SECRET_KEY_BASE
+        value: 169957e4c091c9bb0a552446f08f84a7411390929dc0e5753769eb882fe55588d0b01a1925c62ea114b067b9ceacbaa82965e3a8ca896628bf4a2e3823bfbec13
       - key: WEB_CONCURRENCY
-        value: 2 # sensible default
+        value: 2
