@@ -81,6 +81,13 @@ Rails.application.configure do
   config.hosts << "proje-1-staj.onrender.com"
   # Allow requests from any onrender.com subdomain for flexibility
   config.hosts << /.*\.onrender\.com/
+  # Allow localhost and internal IPs for health checks
+  config.hosts << "localhost"
+  config.hosts << /127\.0\.0\.1/
+  config.hosts << /0\.0\.0\.0/
+  
+  # Option to disable host checking entirely for deployment troubleshooting
+  config.hosts.clear if ENV['DISABLE_HOST_CHECK']
   
   # Skip DNS rebinding protection for the default health check endpoint.
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }

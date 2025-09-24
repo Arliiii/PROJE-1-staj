@@ -31,3 +31,5 @@ services:
         value: 169957e4c091c9bb0a552446f08f84a7411390929dc0e5753769eb882fe55588d0b01a1925c62ea114b067b9ceacbaa82965e3a8ca896628bf4a2e3823bfbec13
       - key: WEB_CONCURRENCY
         value: 2
+      - key: DISABLE_HOST_CHECK
+        value: true
