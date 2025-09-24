@@ -77,7 +77,7 @@ export default function Dashboard() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-yellow-600">{t('recentActivity')}</p>
                 <p className="text-2xl font-bold text-yellow-900">
-                  {analyticsLoading ? '...' : analytics?.recent_additions || 0}
+                  {analyticsLoading ? '...' : analytics?.recent_count || 0}
                 </p>
               </div>
             </div>
@@ -93,7 +93,7 @@ export default function Dashboard() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-purple-600">{t('thisMonth')}</p>
                 <p className="text-2xl font-bold text-purple-900">
-                  {analyticsLoading ? '...' : Math.floor((analytics?.recent_additions || 0) * 0.6)}
+                  {analyticsLoading ? '...' : Math.floor((analytics?.recent_count || 0) * 0.6)}
                 </p>
               </div>
             </div>

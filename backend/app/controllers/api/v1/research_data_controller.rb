@@ -23,7 +23,7 @@ class Api::V1::ResearchDataController < ApplicationController
     
     if search_query.present?
       @research_data = @research_data.where(
-        "title ILIKE ? OR abstract ILIKE ? OR authors ILIKE ? OR keywords ILIKE ?",
+        "title ILIKE ? OR abstract ILIKE ? OR author ILIKE ? OR keywords ILIKE ?",
         "%#{search_query}%", "%#{search_query}%", "%#{search_query}%", "%#{search_query}%"
       )
     end
@@ -39,21 +39,21 @@ class Api::V1::ResearchDataController < ApplicationController
       {
         id: datum.id,
         title: datum.title,
-        authors: datum.authors,
+        author: datum.author,
         publication_date: datum.publication_date,
-        journal_name: datum.journal_name,
+        journal: datum.journal,
         category: datum.category,
         keywords: datum.keywords,
         abstract: datum.abstract,
         doi: datum.doi,
         url: datum.url,
-        citation_count: datum.citation_count,
-        impact_factor: datum.impact_factor,
-        open_access: datum.open_access,
-        funding_source: datum.funding_source,
+        volume: datum.volume,
+        issue: datum.issue,
+        pages: datum.pages,
         methodology: datum.methodology,
-        sample_size: datum.sample_size,
-        statistical_significance: datum.statistical_significance,
+        results: datum.results,
+        conclusions: datum.conclusions,
+        notes: datum.notes,
         created_at: datum.created_at,
         updated_at: datum.updated_at
       }
@@ -121,7 +121,7 @@ class Api::V1::ResearchDataController < ApplicationController
           research_datum = ResearchDatum.new(
             title: row['title'],
             authors: row['authors'],
-            publication_date: Date.parse(row['publication_date']) rescue nil,
+            publication_date: (Date.parse(row['publication_date']) rescue nil),
             journal_name: row['journal_name'],
             category: row['category'],
             keywords: row['keywords'],
@@ -200,6 +200,15 @@ class Api::V1::ResearchDataController < ApplicationController
     }
   end
 
+  def categories
+    # Get all unique categories from the database
+    categories = ResearchDatum.distinct.pluck(:category).compact.sort
+    
+    render json: {
+      categories: categories
+    }
+  end
+
   private
 
   def set_research_datum
@@ -208,10 +217,9 @@ class Api::V1::ResearchDataController < ApplicationController
 
   def research_datum_params
     params.require(:research_datum).permit(
-      :title, :authors, :publication_date, :journal_name, :category,
-      :keywords, :abstract, :doi, :url, :citation_count, :impact_factor,
-      :open_access, :funding_source, :methodology, :sample_size,
-      :statistical_significance
+      :title, :author, :publication_date, :journal, :category,
+      :keywords, :abstract, :doi, :url, :volume, :issue, :pages,
+      :methodology, :results, :conclusions, :notes
     )
   end
 end

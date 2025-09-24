@@ -1,6 +1,6 @@
 class ResearchDatum < ApplicationRecord
   validates :title, presence: true
-  validates :authors, presence: true
+  validates :author, presence: true
   validates :publication_date, presence: true
 
   # Scopes using PostgreSQL syntax
@@ -16,7 +16,7 @@ class ResearchDatum < ApplicationRecord
   # Search scope using PostgreSQL ILIKE for case-insensitive search
   scope :search_text, ->(query) {
     where(
-      "title ILIKE ? OR abstract ILIKE ? OR authors ILIKE ? OR keywords ILIKE ?",
+      "title ILIKE ? OR abstract ILIKE ? OR author ILIKE ? OR keywords ILIKE ?",
       "%#{query}%", "%#{query}%", "%#{query}%", "%#{query}%"
     ) if query.present?
   }

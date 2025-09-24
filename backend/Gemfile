@@ -29,6 +29,12 @@ gem "image_processing", "~> 1.2"
 # CORS handling
 gem "rack-cors"
 
+# Environment variables
+gem "dotenv-rails"
+
+# CSV parsing (required for Ruby 3.4+)
+gem "csv"
+
 # Search and filtering
 gem "ransack"
 

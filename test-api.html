@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Test</h1>
+    <button onclick="testAPI()">Test API</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function testAPI() {
+            const result = document.getElementById('result');
+            result.textContent = 'Testing API...\n';
+            
+            try {
+                // Test analytics endpoint
+                result.textContent += 'Testing analytics endpoint...\n';
+                const analyticsResponse = await fetch('http://127.0.0.1:3001/api/v1/research_data/analytics', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                result.textContent += `Analytics Status: ${analyticsResponse.status}\n`;
+                if (analyticsResponse.ok) {
+                    const analyticsData = await analyticsResponse.json();
+                    result.textContent += `Analytics Data: ${JSON.stringify(analyticsData, null, 2)}\n\n`;
+                } else {
+                    result.textContent += `Analytics Error: ${await analyticsResponse.text()}\n\n`;
+                }
+                
+                // Test research data endpoint
+                result.textContent += 'Testing research data endpoint...\n';
+                const dataResponse = await fetch('http://127.0.0.1:3001/api/v1/research_data?per_page=5', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                result.textContent += `Data Status: ${dataResponse.status}\n`;
+                if (dataResponse.ok) {
+                    const researchData = await dataResponse.json();
+                    result.textContent += `Data: ${JSON.stringify(researchData, null, 2)}\n`;
+                } else {
+                    result.textContent += `Data Error: ${await dataResponse.text()}\n`;
+                }
+                
+            } catch (error) {
+                result.textContent += `Error: ${error.message}\n`;
+            }
+        }
+    </script>
+</body>
+</html>

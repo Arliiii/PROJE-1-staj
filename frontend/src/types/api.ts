@@ -38,8 +38,8 @@ export interface ApiResponse<T> {
 export interface Analytics {
   total_count: number;
   by_category: Record<string, number>;
-  by_month?: Record<string, number>;
-  recent_additions: number;
+  by_publication_date?: Record<string, number>;
+  recent_count: number;
 }
 
 export interface Categories {
