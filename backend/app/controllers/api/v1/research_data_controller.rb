@@ -1,221 +1,215 @@
-class Api::V1::ResearchDataController < Api::V1::BaseController
-  before_action :set_research_datum, only: [:show, :update, :destroy]
+class Api::V1::ResearchDataController < ApplicationController
+  before_action :set_research_datum, only: %i[ show edit update destroy ]
 
-  # GET /api/v1/research_data
+  # GET /research_data or /research_data.json
   def index
-    @research_data = ResearchDatum.all
+    @q = ResearchDatum.ransack(params[:q])
     
-    # Apply search filter (PostgreSQL compatible)
-    if params[:search].present?
+    # Get filter parameters
+    category = params[:category]
+    publication_year = params[:publication_year]
+    search_query = params[:search]
+    per_page = params[:per_page] || 10
+    page = params[:page] || 1
+
+    # Start with base scope
+    @research_data = @q.result(distinct: true)
+
+    # Apply filters
+    @research_data = @research_data.where(category: category) if category.present?
+    @research_data = @research_data.where('EXTRACT(year FROM publication_date) = ?', publication_year) if publication_year.present?
+    
+    if search_query.present?
       @research_data = @research_data.where(
-        "title ILIKE ? OR author ILIKE ? OR keywords ILIKE ?", 
-        "%#{params[:search]}%", 
-        "%#{params[:search]}%",
-        "%#{params[:search]}%"
+        "title ILIKE ? OR abstract ILIKE ? OR authors ILIKE ? OR keywords ILIKE ?",
+        "%#{search_query}%", "%#{search_query}%", "%#{search_query}%", "%#{search_query}%"
       )
     end
-    
-    # Apply category filter
-    if params[:category].present?
-      @research_data = @research_data.where(category: params[:category])
-    end
 
-    # Apply date filters
-    if params[:date_from].present?
-      @research_data = @research_data.where('publication_date >= ?', params[:date_from])
-    end
-    
-    if params[:date_to].present?
-      @research_data = @research_data.where('publication_date <= ?', params[:date_to])
-    end
-    
-    # Pagination
-    page = (params[:page] || 1).to_i
-    per_page = (params[:per_page] || 10).to_i
-    per_page = [per_page, 100].min # Limit max per_page to 100
-    
-    total_count = @research_data.count
-    total_pages = (total_count.to_f / per_page).ceil
-    
-    offset = (page - 1) * per_page
-    paginated_data = @research_data.limit(per_page).offset(offset)
-    
-    render json: {
-      data: paginated_data.map do |item|
-        {
-          id: item.id,
-          title: item.title,
-          author: item.author,
-          category: item.category,
-          keywords: item.keywords,
-          publication_date: item.publication_date,
-          abstract: item.abstract,
-          methodology: item.methodology,
-          results: item.results,
-          conclusions: item.conclusions,
-          journal: item.journal,
-          volume: item.volume,
-          issue: item.issue,
-          pages: item.pages,
-          doi: item.doi,
-          url: item.url,
-          notes: item.notes,
-          created_at: item.created_at,
-          updated_at: item.updated_at
-        }
-      end,
-      total_count: total_count,
-      total_pages: total_pages,
-      current_page: page,
-      per_page: per_page,
-      # Add aliases for frontend compatibility
-      currentPage: page,
-      totalPages: total_pages,
-      meta: {
-        total_count: total_count
+    # Get total count before pagination
+    @total_count = @research_data.count
+
+    # Apply pagination
+    @research_data = @research_data.offset((page.to_i - 1) * per_page.to_i).limit(per_page.to_i)
+
+    # Transform data for response
+    transformed_data = @research_data.map do |datum|
+      {
+        id: datum.id,
+        title: datum.title,
+        authors: datum.authors,
+        publication_date: datum.publication_date,
+        journal_name: datum.journal_name,
+        category: datum.category,
+        keywords: datum.keywords,
+        abstract: datum.abstract,
+        doi: datum.doi,
+        url: datum.url,
+        citation_count: datum.citation_count,
+        impact_factor: datum.impact_factor,
+        open_access: datum.open_access,
+        funding_source: datum.funding_source,
+        methodology: datum.methodology,
+        sample_size: datum.sample_size,
+        statistical_significance: datum.statistical_significance,
+        created_at: datum.created_at,
+        updated_at: datum.updated_at
       }
-    }
-  end
+    end
 
-  # GET /api/v1/research_data/1
-  def show
     render json: {
-      id: @research_datum.id,
-      title: @research_datum.title,
-      author: @research_datum.author,
-      category: @research_datum.category,
-      keywords: @research_datum.keywords,
-      publication_date: @research_datum.publication_date,
-      abstract: @research_datum.abstract,
-      methodology: @research_datum.methodology,
-      results: @research_datum.results,
-      conclusions: @research_datum.conclusions,
-      journal: @research_datum.journal,
-      volume: @research_datum.volume,
-      issue: @research_datum.issue,
-      pages: @research_datum.pages,
-      doi: @research_datum.doi,
-      url: @research_datum.url,
-      notes: @research_datum.notes,
-      created_at: @research_datum.created_at,
-      updated_at: @research_datum.updated_at
+      data: transformed_data,
+      total_count: @total_count,
+      per_page: per_page.to_i,
+      current_page: page.to_i,
+      total_pages: (@total_count.to_f / per_page.to_i).ceil
     }
   end
 
-  # POST /api/v1/research_data
+  # GET /research_data/1 or /research_data/1.json
+  def show
+    render json: @research_datum
+  end
+
+  # GET /research_data/new
+  def new
+    @research_datum = ResearchDatum.new
+  end
+
+  # GET /research_data/1/edit
+  def edit
+  end
+
+  # POST /research_data or /research_data.json
   def create
     @research_datum = ResearchDatum.new(research_datum_params)
 
     if @research_datum.save
-      render json: {
-        id: @research_datum.id,
-        title: @research_datum.title,
-        author: @research_datum.author,
-        category: @research_datum.category,
-        keywords: @research_datum.keywords,
-        publication_date: @research_datum.publication_date,
-        abstract: @research_datum.abstract,
-        methodology: @research_datum.methodology,
-        results: @research_datum.results,
-        conclusions: @research_datum.conclusions,
-        journal: @research_datum.journal,
-        volume: @research_datum.volume,
-        issue: @research_datum.issue,
-        pages: @research_datum.pages,
-        doi: @research_datum.doi,
-        url: @research_datum.url,
-        notes: @research_datum.notes,
-        created_at: @research_datum.created_at,
-        updated_at: @research_datum.updated_at
-      }, status: :created
+      render json: @research_datum, status: :created
     else
-      render json: {
-        errors: @research_datum.errors.full_messages,
-        details: @research_datum.errors.messages
-      }, status: :unprocessable_entity
+      render json: { errors: @research_datum.errors }, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /api/v1/research_data/1
+  # PATCH/PUT /research_data/1 or /research_data/1.json
   def update
     if @research_datum.update(research_datum_params)
-      render json: {
-        id: @research_datum.id,
-        title: @research_datum.title,
-        author: @research_datum.author,
-        category: @research_datum.category,
-        keywords: @research_datum.keywords,
-        publication_date: @research_datum.publication_date,
-        abstract: @research_datum.abstract,
-        methodology: @research_datum.methodology,
-        results: @research_datum.results,
-        conclusions: @research_datum.conclusions,
-        journal: @research_datum.journal,
-        volume: @research_datum.volume,
-        issue: @research_datum.issue,
-        pages: @research_datum.pages,
-        doi: @research_datum.doi,
-        url: @research_datum.url,
-        notes: @research_datum.notes,
-        created_at: @research_datum.created_at,
-        updated_at: @research_datum.updated_at
-      }
+      render json: @research_datum
     else
-      render json: {
-        errors: @research_datum.errors.full_messages,
-        details: @research_datum.errors.messages
-      }, status: :unprocessable_entity
+      render json: { errors: @research_datum.errors }, status: :unprocessable_entity
     end
   end
 
-  # DELETE /api/v1/research_data/1
+  # DELETE /research_data/1 or /research_data/1.json
   def destroy
-    @research_datum.destroy
-    head :no_content
+    @research_datum.destroy!
+    render json: { message: 'Research data deleted successfully' }
   end
 
-  # GET /api/v1/research_data/analytics
+  def import_csv
+    if params[:file].present?
+      begin
+        file = params[:file]
+        
+        # Read and parse CSV
+        csv_data = CSV.parse(file.read, headers: true)
+        imported_count = 0
+        
+        csv_data.each do |row|
+          research_datum = ResearchDatum.new(
+            title: row['title'],
+            authors: row['authors'],
+            publication_date: Date.parse(row['publication_date']) rescue nil,
+            journal_name: row['journal_name'],
+            category: row['category'],
+            keywords: row['keywords'],
+            abstract: row['abstract'],
+            doi: row['doi'],
+            url: row['url'],
+            citation_count: row['citation_count']&.to_i,
+            impact_factor: row['impact_factor']&.to_f,
+            open_access: row['open_access'] == 'true',
+            funding_source: row['funding_source'],
+            methodology: row['methodology'],
+            sample_size: row['sample_size']&.to_i,
+            statistical_significance: row['statistical_significance']&.to_f
+          )
+          
+          if research_datum.save
+            imported_count += 1
+          end
+        end
+        
+        render json: { 
+          message: "Successfully imported #{imported_count} records",
+          imported_count: imported_count 
+        }
+      rescue => e
+        render json: { error: "Import failed: #{e.message}" }, status: :unprocessable_entity
+      end
+    else
+      render json: { error: "No file provided" }, status: :bad_request
+    end
+  end
+
+  def export_csv
+    @research_data = ResearchDatum.all
+    
+    csv_data = CSV.generate(headers: true) do |csv|
+      csv << [
+        'title', 'authors', 'publication_date', 'journal_name', 'category',
+        'keywords', 'abstract', 'doi', 'url', 'citation_count',
+        'impact_factor', 'open_access', 'funding_source', 'methodology',
+        'sample_size', 'statistical_significance'
+      ]
+      
+      @research_data.each do |datum|
+        csv << [
+          datum.title, datum.authors, datum.publication_date, datum.journal_name,
+          datum.category, datum.keywords, datum.abstract, datum.doi, datum.url,
+          datum.citation_count, datum.impact_factor, datum.open_access,
+          datum.funding_source, datum.methodology, datum.sample_size,
+          datum.statistical_significance
+        ]
+      end
+    end
+    
+    send_data csv_data, filename: "research_data_#{Date.current}.csv", type: 'text/csv'
+  end
+
   def analytics
+    # Total count
     total_count = ResearchDatum.count
     
+    # By category
     by_category = ResearchDatum.group(:category).count
     
-    # For PostgreSQL compatibility
-    by_month = ResearchDatum.group("DATE_TRUNC('month', publication_date)").count
+    # By publication month/year using PostgreSQL DATE_TRUNC
+    by_publication_date = ResearchDatum.group("DATE_TRUNC('month', publication_date)").count
     
-    recent_additions = ResearchDatum.where('created_at >= ?', 30.days.ago).count
-
+    # Recent additions (last 30 days)
+    recent_count = ResearchDatum.where('created_at >= ?', 30.days.ago).count
+    
     render json: {
       total_count: total_count,
       by_category: by_category,
-      by_month: by_month,
-      recent_additions: recent_additions
+      by_publication_date: by_publication_date,
+      recent_count: recent_count
     }
-  end
-
-  # GET /api/v1/research_data/categories
-  def categories
-    categories = ResearchDatum.distinct.pluck(:category).compact.sort
-    render json: { categories: categories }
   end
 
   private
 
   def set_research_datum
     @research_datum = ResearchDatum.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    render json: {
-      error: "Record not found",
-      message: "Couldn't find ResearchDatum with 'id'=#{params[:id]}"
-    }, status: :not_found
   end
 
   def research_datum_params
-    # For API endpoints, we'll accept both nested and flat parameters
-    if params[:research_datum].present?
-      params.require(:research_datum).permit(:title, :author, :category, :keywords, :publication_date, :abstract, :methodology, :results, :conclusions, :journal, :volume, :issue, :pages, :doi, :url, :notes)
-    else
-      params.permit(:title, :author, :category, :keywords, :publication_date, :abstract, :methodology, :results, :conclusions, :journal, :volume, :issue, :pages, :doi, :url, :notes)
-    end
+    params.require(:research_datum).permit(
+      :title, :authors, :publication_date, :journal_name, :category,
+      :keywords, :abstract, :doi, :url, :citation_count, :impact_factor,
+      :open_access, :funding_source, :methodology, :sample_size,
+      :statistical_significance
+    )
   end
 end
