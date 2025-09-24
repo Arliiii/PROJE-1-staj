@@ -3,12 +3,12 @@ import { ResearchDatum, ApiResponse, Analytics, Categories } from '@/types/api';
 // Re-export types for convenience
 export type { ResearchDatum, ApiResponse, Analytics, Categories } from '@/types/api';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 class ApiService {
   private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
-    
+
     try {
       const response = await fetch(url, {
         headers: {
