@@ -2,23 +2,14 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
 
 development:
   <<: *default
-  database: staj_proje_development
-  host: localhost
-  username: postgres
-  password: ""
-  port: 5432
+  url: <%= ENV.fetch("DATABASE_URL") { "postgresql://postgres:@localhost:5432/staj_proje_development" } %>
 
 test:
   <<: *default
-  database: staj_proje_test
-  host: localhost
-  username: postgres
-  password: ""
-  port: 5432
+  url: <%= ENV.fetch("DATABASE_URL") { "postgresql://postgres:@localhost:5432/staj_proje_test" } %>
 
 production:
   <<: *default

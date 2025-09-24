@@ -1,3 +1,5 @@
+require 'csv'
+
 class Api::V1::ResearchDataController < ApplicationController
   before_action :set_research_datum, only: %i[ show edit update destroy ]
 
