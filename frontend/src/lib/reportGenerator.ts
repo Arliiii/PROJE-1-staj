@@ -1,7 +1,13 @@
 import { ResearchDatum } from '@/types/api';
 
+interface ReportFilters {
+  category?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
 export class ReportGenerator {
-  static generateCSV(data: ResearchDatum[], filters: any = {}): void {
+  static generateCSV(data: ResearchDatum[], filters: ReportFilters = {}): void {
     const headers = [
       'ID',
       'Title',
@@ -24,7 +30,7 @@ export class ReportGenerator {
     ];
 
     // Helper function to escape CSV values
-    const escapeCSV = (value: any): string => {
+    const escapeCSV = (value: string | number | null | undefined): string => {
       if (value === null || value === undefined) return '';
       const str = String(value);
       if (str.includes(',') || str.includes('"') || str.includes('\n')) {
@@ -82,11 +88,10 @@ export class ReportGenerator {
     }
   }
 
-  static generatePDF(data: ResearchDatum[], filters: any = {}): void {
+  static generatePDF(data: ResearchDatum[], filters: ReportFilters = {}): void {
     // For PDF generation, you would typically use a library like jsPDF or PDFKit
     // For now, let's create a simple HTML report that can be printed to PDF
     
-    const timestamp = new Date().toISOString().split('T')[0];
     const filterString = filters.category ? ` - Category: ${filters.category}` : '';
     const dateString = filters.dateFrom || filters.dateTo ? ` - Date Range: ${filters.dateFrom || 'All'} to ${filters.dateTo || 'All'}` : '';
     

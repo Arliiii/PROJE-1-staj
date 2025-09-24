@@ -11,7 +11,6 @@ import { Search, Filter, Calendar, User, Tag, ExternalLink } from 'lucide-react'
 
 export default function Explore() {
   const t = useTranslations('explore');
-  const tCommon = useTranslations('common');
   
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
@@ -113,7 +112,7 @@ export default function Explore() {
             <div className="flex flex-wrap gap-2">
               {search && (
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                  Search: "{search}"
+                  Search: &quot;{search}&quot;
                   <button
                     onClick={() => setSearch('')}
                     className="ml-1 hover:text-blue-600"
@@ -177,7 +176,7 @@ export default function Explore() {
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
               <p className="text-gray-600 mb-4">
-                Try adjusting your search terms or filters to find what you're looking for.
+                Try adjusting your search terms or filters to find what you&apos;re looking for.
               </p>
               <Button onClick={clearFilters} variant="outline">
                 Clear all filters

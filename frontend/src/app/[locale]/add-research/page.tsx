@@ -33,7 +33,7 @@ export default function AddResearchPage() {
     notes: ''
   });
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
 
   const createMutation = useMutation({
     mutationFn: (data: Omit<ResearchDatum, 'id' | 'created_at' | 'updated_at'>) =>
@@ -61,36 +61,36 @@ export default function AddResearchPage() {
       setErrors({});
       alert(t('success'));
     },
-    onError: (error: any) => {
+    onError: (error: Error & { response?: { data?: { details?: Record<string, string[]> } } }) => {
       if (error.response?.data?.details) {
         setErrors(error.response.data.details);
       }
     },
   });
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string[]> = {};
 
     if (!formData.title.trim()) {
-      newErrors.title = t('validation.titleRequired');
+      newErrors.title = [t('validation.titleRequired')];
     }
 
     if (!formData.author.trim()) {
-      newErrors.author = t('validation.authorsRequired');
+      newErrors.author = [t('validation.authorsRequired')];
     }
 
     if (!formData.category.trim()) {
-      newErrors.category = t('validation.categoryRequired');
+      newErrors.category = [t('validation.categoryRequired')];
     }
 
     if (!formData.publication_date) {
-      newErrors.publication_date = t('validation.yearRequired');
+      newErrors.publication_date = [t('validation.yearRequired')];
     }
 
     const currentYear = new Date().getFullYear();
     const year = parseInt(formData.publication_date);
     if (formData.publication_date && (year < 1900 || year > currentYear + 1)) {
-      newErrors.publication_date = t('validation.yearInvalid');
+      newErrors.publication_date = [t('validation.yearInvalid')];
     }
 
     setErrors(newErrors);
@@ -115,7 +115,7 @@ export default function AddResearchPage() {
     
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors(prev => ({ ...prev, [name]: [] }));
     }
   };
 
@@ -225,7 +225,7 @@ export default function AddResearchPage() {
                     <option value="Other">Other</option>
                   </select>
                   {errors.category && (
-                    <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+                    <p className="mt-1 text-sm text-red-600">{Array.isArray(errors.category) ? errors.category.join(', ') : errors.category}</p>
                   )}
                 </div>
               </div>
