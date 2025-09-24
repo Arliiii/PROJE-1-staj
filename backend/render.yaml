@@ -7,11 +7,10 @@ databases:
 services:
   - type: web
     name: mysite
-    runtime: ruby
+    runtime: docker
     plan: free
-    buildCommand: "./bin/render-build.sh"
+    dockerfilePath: ./Dockerfile.render
     # preDeployCommand: "bundle exec rails db:migrate" # preDeployCommand only available on paid instance types
-    startCommand: "bundle exec rails server"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
