@@ -296,7 +296,7 @@ export default function Reports() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Recent Additions:</span>
-                  <span className="font-semibold">{analytics?.recent_additions || 0}</span>
+                  <span className="font-semibold">{analytics?.recent_count || 0}</span>
                 </div>
                 <div className="pt-2 border-t">
                   <p className="text-xs text-gray-500">
