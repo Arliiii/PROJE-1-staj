@@ -5,10 +5,10 @@ class Api::V1::ResearchDataController < Api::V1::BaseController
   def index
     @research_data = ResearchDatum.all
     
-    # Apply search filter (SQLite compatible)
+    # Apply search filter (PostgreSQL compatible)
     if params[:search].present?
       @research_data = @research_data.where(
-        "title LIKE ? OR author LIKE ? OR keywords LIKE ?", 
+        "title ILIKE ? OR author ILIKE ? OR keywords ILIKE ?", 
         "%#{params[:search]}%", 
         "%#{params[:search]}%",
         "%#{params[:search]}%"
@@ -180,8 +180,8 @@ class Api::V1::ResearchDataController < Api::V1::BaseController
     
     by_category = ResearchDatum.group(:category).count
     
-    # For SQLite compatibility
-    by_month = ResearchDatum.group("strftime('%Y-%m', publication_date)").count
+    # For PostgreSQL compatibility
+    by_month = ResearchDatum.group("DATE_TRUNC('month', publication_date)").count
     
     recent_additions = ResearchDatum.where('created_at >= ?', 30.days.ago).count
 

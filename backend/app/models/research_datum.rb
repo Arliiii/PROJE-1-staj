@@ -9,9 +9,9 @@ class ResearchDatum < ApplicationRecord
   validates :conclusions, length: { maximum: 2000 }
   validates :publication_date, presence: true
 
-  # Scopes for common queries (SQLite compatible)
+  # Scopes for common queries (PostgreSQL compatible)
   scope :by_category, ->(category) { where(category: category) }
-  scope :by_author, ->(author) { where("author LIKE ?", "%#{author}%") }
+  scope :by_author, ->(author) { where("author ILIKE ?", "%#{author}%") }
   scope :recent, -> { order(created_at: :desc) }
   scope :published_after, ->(date) { where("publication_date >= ?", date) }
 end
