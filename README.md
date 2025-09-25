@@ -1,7 +1,7 @@
 # Research Data Management System
 
 A full-stack research data management system built with Rails API backend and Next.js frontend.
-
+web: https://proje-1-staj.vercel.app/en
 ## Features
 
 ### Backend (Rails 8.x API)
